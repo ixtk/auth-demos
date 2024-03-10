@@ -1,5 +1,6 @@
 import { Form, Formik, ErrorMessage, Field } from "formik"
 import { Link } from "react-router-dom"
+import { axiosInstance } from "../axiosInstance"
 
 export const LoginPage = () => {
   const initialValues = {
@@ -8,7 +9,9 @@ export const LoginPage = () => {
   }
 
   const loginUser = async (loginValues, { setSubmitting }) => {
-    // todo
+    const response = await axiosInstance.post("/user/login", loginValues)
+
+    console.log(response.data)
   }
 
   return (

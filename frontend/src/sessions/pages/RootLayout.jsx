@@ -1,8 +1,11 @@
 import { Outlet, NavLink } from "react-router-dom"
+import {axiosInstance} from "../axiosInstance"
 
 export const RootLayout = () => {
   const logout = async () => {
-    // todo
+    const response = await axiosInstance.delete("/user/logout")
+
+    console.log(response.data)
   }
 
   return (

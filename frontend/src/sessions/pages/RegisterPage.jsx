@@ -1,4 +1,5 @@
 import { Form, Formik, Field, ErrorMessage } from "formik"
+import { axiosInstance } from "../axiosInstance"
 
 export const RegisterPage = () => {
   const initialValues = {
@@ -9,7 +10,9 @@ export const RegisterPage = () => {
   }
 
   const registerUser = async (registerValues, { setSubmitting }) => {
-    // todo
+    const response = await axiosInstance.post("/user/register", registerValues)
+
+    console.log(response.data)
   }
 
   return (
