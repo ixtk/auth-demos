@@ -71,6 +71,12 @@ sessionRouter.delete("/user/logout", async (req, res) => {
   res.json({ message: "Logged out" })
 })
 
-sessionRouter.get("/user/auth", async (req, res) => {
-  // todo
+sessionRouter.get("/user/status", async (req, res) => {
+  const user = await User.findById(req.session.userId).select('-password')
+
+  if (user) {
+    res.json({ user })
+  } else {
+    res.status(401).json({ message: "Unauthorized" })
+  }
 })

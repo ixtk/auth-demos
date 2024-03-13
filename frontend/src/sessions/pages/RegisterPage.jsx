@@ -12,6 +12,13 @@ export const RegisterPage = () => {
   const registerUser = async (registerValues, { setSubmitting }) => {
     const response = await axiosInstance.post("/user/register", registerValues)
 
+    // if (response.statusText === "OK") {
+    //   setAuthState({
+    //     ...authState,
+    //     user: response.data.user
+    //   })
+    // }
+
     console.log(response.data)
   }
 

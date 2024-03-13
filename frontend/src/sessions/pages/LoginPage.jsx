@@ -1,21 +1,32 @@
 import { Form, Formik, ErrorMessage, Field } from "formik"
 import { Link } from "react-router-dom"
 import { axiosInstance } from "../axiosInstance"
+import { useContext } from "react"
+import { AuthContext } from "../AuthContext"
 
 export const LoginPage = () => {
   const initialValues = {
     email: "",
     password: ""
   }
+  const { authState, setAuthState } = useContext(AuthContext)
 
   const loginUser = async (loginValues, { setSubmitting }) => {
     const response = await axiosInstance.post("/user/login", loginValues)
+
+    if (response.statusText === "OK") {
+      setAuthState({
+        ...authState,
+        user: response.data.user
+      })
+    }
 
     console.log(response.data)
   }
 
   return (
     <div className="form-page-container">
+      <h1>{authState.user?.username}</h1>
       <Formik initialValues={initialValues} onSubmit={loginUser}>
         {(formikProps) => {
           return (
