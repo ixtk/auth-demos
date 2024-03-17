@@ -26,7 +26,7 @@ export const LoginPage = () => {
 
   return (
     <div className="form-page-container">
-      {/* <h1>{authState.user?.username}</h1> */}
+      <h1>{authState.user?.username}</h1>
       <Formik initialValues={initialValues} onSubmit={loginUser}>
         {(formikProps) => {
           return (

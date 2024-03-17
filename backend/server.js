@@ -3,6 +3,7 @@ import cors from "cors"
 import cookieparser from "cookie-parser"
 import mongoose from "mongoose"
 import { sessionRouter } from "./routers/sessionsRouter.js"
+import { jwtSimpleRouter } from "./routers/jwtSimpleRouter.js"
 
 const app = express()
 
@@ -16,6 +17,7 @@ app.use(
 app.use(express.json())
 
 app.use("/sessions", sessionRouter)
+app.use("/jwt-simple", jwtSimpleRouter)
 
 app.listen(3000, async () => {
   console.log("Server running on port 3000")

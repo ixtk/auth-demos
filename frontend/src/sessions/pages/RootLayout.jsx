@@ -25,32 +25,43 @@ export const RootLayout = () => {
         <h1>Sessions</h1>
         <nav>
           <ul>
-            <li>
-              <NavLink to="/">Home</NavLink>
-            </li>
-            {authState.user !== null ? (
-              <>
-                <li>
-                  <NavLink to="/secret">Secret</NavLink>
-                </li>
-                <li>
-                  <button onClick={logout}>Logout</button>
-                </li>
-                <li>
-                  <img
-                    src="https://t3.ftcdn.net/jpg/05/16/27/58/360_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg"
-                    alt="Profile picture"
-                  />
-                </li>
-              </>
+            {authState.initialLoading ? (
+              <div className="loading-container">
+                <div className="skeleton-loading"></div>
+                <div className="skeleton-loading"></div>
+                <div className="skeleton-loading"></div>
+                <div className="skeleton-loading"></div>
+              </div>
             ) : (
               <>
                 <li>
-                  <NavLink to="/login">Login</NavLink>
+                  <NavLink to="/">Home</NavLink>
                 </li>
-                <li>
-                  <NavLink to="/register">Register</NavLink>
-                </li>
+                {authState.user !== null ? (
+                  <>
+                    <li>
+                      <NavLink to="/secret">Secret</NavLink>
+                    </li>
+                    <li>
+                      <button onClick={logout}>Logout</button>
+                    </li>
+                    <li>
+                      <img
+                        src="https://t3.ftcdn.net/jpg/05/16/27/58/360_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg"
+                        alt="Profile picture"
+                      />
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    <li>
+                      <NavLink to="/login">Login</NavLink>
+                    </li>
+                    <li>
+                      <NavLink to="/register">Register</NavLink>
+                    </li>
+                  </>
+                )}
               </>
             )}
           </ul>

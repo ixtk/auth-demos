@@ -12,9 +12,11 @@ sessionRouter.use(
     // HIDE IN PROD!
     secret: "super secret",
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
+    // rolling: true,
     cookie: {
-      maxAge: 1000 * 60 * 60 * 3
+      maxAge: 1000 * 60 * 60 * 3,
+      httpOnly: true
     },
     store: MongoStore.create({
       mongoUrl: "mongodb://127.0.0.1:27017/auth-demos"
@@ -22,9 +24,21 @@ sessionRouter.use(
   })
 )
 
-const verifyAuth = async () => {
-  // todo
+const verifyAuth = async (req, res, next) => {
+  // console.log(req.session)
+  if (req.session.userId) {
+    req.user = await User.findById(req.session.userId).select("-password")
+    next()
+  } else {
+    // else-ში მოვაქციეთ, next()-ის შემდეგ ეს პასუხიც რომ არ გაეშვას
+    return res.status(401).json({ message: "Unauthenticated" })
+  }
 }
+
+sessionRouter.get("/secret", verifyAuth, (req, res) => {
+  console.log("Not logged if user is unauthenticated")
+  res.json({ message: "2 x 2 = 4" })
+})
 
 sessionRouter.post("/user/register", async (req, res) => {
   const registerValues = req.body
@@ -71,12 +85,9 @@ sessionRouter.delete("/user/logout", async (req, res) => {
   res.json({ message: "Logged out" })
 })
 
-sessionRouter.get("/user/status", async (req, res) => {
-  const user = await User.findById(req.session.userId).select('-password')
+sessionRouter.get("/user/status", verifyAuth, async (req, res) => {
+  // სატესტო დაყოვნებისთვის
+  // await fetch('http://httpbin.org/delay/2')
 
-  if (user) {
-    res.json({ user })
-  } else {
-    res.status(401).json({ message: "Unauthorized" })
-  }
+  res.json({ user: req.user })
 })
