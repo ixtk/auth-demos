@@ -3,12 +3,30 @@ import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { User } from "../UserModel.js"
 
+const JWT_SECRET = "<your secret>"
+
 export const jwtSimpleRouter = express.Router()
 
-const verifyAccessToken = async (req, res, next) => {}
+const verifyAccessToken = async (req, res, next) => {
+  const { accessToken } = req.cookies
 
-jwtSimpleRouter.get("/user/status", (req, res) => {
-  res.status(401).json({ message: "status" })
+  if (!accessToken) {
+    return res.status(401).json({ message: "Unauthenticated" })
+  }
+
+  jwt.verify(accessToken, JWT_SECRET, (error, decoded) => {
+    if (error) {
+      return res.status(401).json({ message: "Unauthenticated" })
+    }
+
+    // თუ middleware-ში ვართ...
+    req.user = decoded // ⚠️
+    next()
+  })
+}
+
+jwtSimpleRouter.get("/user/status", verifyAccessToken, (req, res) => {
+  res.json({ user: req.user })
 })
 
 jwtSimpleRouter.get("/secret", (req, res) => {
@@ -28,7 +46,7 @@ jwtSimpleRouter.post("/user/register", async (req, res) => {
 
   await newUser.save()
 
-  res.status(200).json({
+  res.json({
     user: { username: newUser.username, email: newUser.email }
   })
 })
@@ -41,14 +59,23 @@ jwtSimpleRouter.post("/user/login", async (req, res) => {
   if (user && (await bcrypt.compare(password, userObj.password))) {
     const { password, ...rest } = userObj
 
-    await user.save()
+    const accessToken = jwt.sign(rest, JWT_SECRET, {
+      expiresIn: "1d"
+    })
 
-    res.status(200).json({ user: rest })
+    res
+      .cookie("accessToken", accessToken, {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24,
+        sameSite: "strict"
+      })
+      .json({ user: rest })
   } else {
     res.status(401).json({ message: "Invalid username or password" })
   }
 })
 
 jwtSimpleRouter.delete("/user/logout", async (req, res) => {
-  res.status(200).json({ message: "Logged out" })
+  res.clearCookie("accessToken")
+  res.json({ message: "Logged out" })
 })
