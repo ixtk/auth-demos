@@ -6,6 +6,6 @@ export const axiosInstance = axios.create({
 })
 
 export const axiosInterceptorsInstance = axios.create({
-  baseURL: "http://localhost:3000/sessions",
+  baseURL: "http://localhost:3000/jwt-simple",
   withCredentials: true
 })

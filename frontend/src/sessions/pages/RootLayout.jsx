@@ -9,12 +9,10 @@ export const RootLayout = () => {
   const logout = async () => {
     const response = await axiosInstance.delete("/user/logout")
 
-    if (response.statusText === "OK") {
-      setAuthState({
-        ...authState,
-        user: null
-      })
-    }
+    setAuthState({
+      ...authState,
+      user: null
+    })
 
     console.log(response.data)
   }

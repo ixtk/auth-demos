@@ -14,12 +14,10 @@ export const LoginPage = () => {
   const loginUser = async (loginValues, { setSubmitting }) => {
     const response = await axiosInstance.post("/user/login", loginValues)
 
-    if (response.statusText === "OK") {
-      setAuthState({
-        ...authState,
-        user: response.data.user
-      })
-    }
+    setAuthState({
+      ...authState,
+      user: response.data.user
+    })
 
     console.log(response.data)
   }

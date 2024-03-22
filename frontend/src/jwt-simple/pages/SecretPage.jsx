@@ -1,10 +1,12 @@
 import { useState } from "react"
+import { axiosInterceptorsInstance } from "../axiosInstance"
 
 export const SecretPage = () => {
   const [secret, setSecret] = useState("")
 
   const getSecret = async () => {
-    // todo
+    const response = await axiosInterceptorsInstance("/secret")
+    setSecret(response.data.secret)
   }
 
   return (

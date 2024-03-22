@@ -19,8 +19,7 @@ const verifyAccessToken = async (req, res, next) => {
       return res.status(401).json({ message: "Unauthenticated" })
     }
 
-    // თუ middleware-ში ვართ...
-    req.user = decoded // ⚠️
+    req.user = decoded
     next()
   })
 }
@@ -29,7 +28,7 @@ jwtSimpleRouter.get("/user/status", verifyAccessToken, (req, res) => {
   res.json({ user: req.user })
 })
 
-jwtSimpleRouter.get("/secret", (req, res) => {
+jwtSimpleRouter.get("/secret", verifyAccessToken, (req, res) => {
   return res.json({ secret: "2 x 2 = 4" })
 })
 
