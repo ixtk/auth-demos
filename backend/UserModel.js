@@ -12,7 +12,8 @@ const UserSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
-  }
+  },
+  refreshTokens: [String]
 })
 
 export const User = mongoose.model("User", UserSchema)

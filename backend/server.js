@@ -4,6 +4,7 @@ import cookieparser from "cookie-parser"
 import mongoose from "mongoose"
 import { sessionRouter } from "./routers/sessionsRouter.js"
 import { jwtSimpleRouter } from "./routers/jwtSimpleRouter.js"
+import { jwtRefreshRouter } from "./routers/jwtRefreshRouter.js"
 
 const app = express()
 
@@ -18,6 +19,7 @@ app.use(express.json())
 
 app.use("/sessions", sessionRouter)
 app.use("/jwt-simple", jwtSimpleRouter)
+app.use("/jwt-refresh", jwtRefreshRouter)
 
 app.listen(3000, async () => {
   console.log("Server running on port 3000")
