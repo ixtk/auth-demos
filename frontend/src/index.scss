@@ -21,7 +21,7 @@
 body {
   margin: 0;
   line-height: 1.4;
-  font-family: "Geist", sans-serif;
+  font-family: "Nunito Sans", sans-serif;
   background-color: var(--col-light);
 }
 
@@ -59,6 +59,18 @@ button {
   }
 }
 
+.btn-primary {
+  background-color: var(--col-accent);
+  color: var(--col-light);
+  text-transform: capitalize;
+}
+
+.btn-secondary {
+  background-color: var(--col-primary-3);
+  color: var(--col-light);
+  text-transform: capitalize;
+}
+
 a {
   text-decoration: none;
   display: inline-block;
@@ -90,6 +102,7 @@ button {
   font: inherit;
   padding: 7px 10px;
   border-radius: var(--border-radius);
+  outline-offset: 5px;
 }
 
 label {

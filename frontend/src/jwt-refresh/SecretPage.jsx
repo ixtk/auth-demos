@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { axiosInterceptorsInstance } from "../axiosInstance"
+import { axiosInterceptorsInstance } from "./axiosInstance"
 
 export const SecretPage = () => {
   const [secret, setSecret] = useState("")
@@ -16,12 +16,18 @@ export const SecretPage = () => {
   }
 
   return (
-    <div className="page-container">
-      <button onClick={() => setSecret("")} style={{ marginRight: "8px" }}>
+    <div>
+      <button
+        className="btn-secondary"
+        style={{ marginRight: "8px" }}
+        onClick={() => setSecret("")}
+      >
         Clear
       </button>
-      <button onClick={getSecret}>Get secret</button>
-      <h3>{secret}</h3>
+      <button className="btn-primary" onClick={getSecret}>
+        Get secret
+      </button>
+      <h3 style={{ margin: "16px 0" }}>{secret}</h3>
     </div>
   )
 }

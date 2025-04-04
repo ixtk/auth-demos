@@ -10,7 +10,7 @@ import { Layout } from "./Layout"
 import { HomePage } from "../common/HomePage"
 import { LoginPage } from "./LoginPage"
 import { RegisterPage } from "./RegisterPage"
-import { SecretPage } from "../common/SecretPage"
+import { SecretPage } from "./SecretPage"
 import { AuthContext, AuthContextProvider } from "./AuthContext"
 import { useContext, useEffect } from "react"
 

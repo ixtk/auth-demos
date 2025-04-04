@@ -37,7 +37,7 @@ const verifyAuth = async (req, res, next) => {
 
 sessionRouter.get("/secret", verifyAuth, (req, res) => {
   console.log("Not logged if user is unauthenticated")
-  res.json({ message: "2 x 2 = 4" })
+  res.json({ secret: "2 x 2 = 4" })
 })
 
 sessionRouter.post("/user/register", async (req, res) => {

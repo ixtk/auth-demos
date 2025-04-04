@@ -5,33 +5,33 @@ import {
   RouterProvider,
   useNavigate
 } from "react-router-dom"
+
+import { Layout } from "./Layout"
+import { HomePage } from "../common/HomePage"
+import { LoginPage } from "./LoginPage"
+import { RegisterPage } from "./RegisterPage"
+import { SecretPage } from "./SecretPage"
+import { AuthContext, AuthContextProvider } from "./AuthContext"
 import { useContext, useEffect } from "react"
 
-import { AuthContextProvider, AuthContext } from "./AuthContext"
-import {
-  HomePage,
-  LoginPage,
-  RegisterPage,
-  SecretPage,
-  RootLayout
-} from "./pages"
-
 const ProtectedRoute = ({ children }) => {
-  const { authState } = useContext(AuthContext)
+  const { auth } = useContext(AuthContext)
   const navigate = useNavigate()
 
+  console.log("auth", auth)
+
   useEffect(() => {
-    if (!authState.initialLoading && !authState.user) {
+    if (auth.loading === false && auth.user === null) {
       navigate("/login")
     }
-  }, [authState.initialLoading, authState.user, navigate])
+  }, [auth.user, auth.loading, navigate])
 
-  return authState.user ? children : null
+  return auth.user ? children : null
 }
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<RootLayout />}>
+    <Route path="/" element={<Layout />}>
       <Route index element={<HomePage />} />
       <Route path="login" element={<LoginPage />} />
       <Route

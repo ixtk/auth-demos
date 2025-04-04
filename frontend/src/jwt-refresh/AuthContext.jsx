@@ -1,29 +1,30 @@
 import { axiosInstance, axiosInterceptorsInstance } from "./axiosInstance.js"
 import { createContext, useState, useEffect } from "react"
+import axios from "axios"
 
-export const AuthContext = createContext(null)
+export const AuthContext = createContext({
+  user: null,
+  loading: true
+})
 
 export const AuthContextProvider = ({ children }) => {
-  const [authState, setAuthState] = useState({
+  const [auth, setAuth] = useState({
     user: null,
-    initialLoading: true
+    loading: true
   })
 
   useEffect(() => {
     const authController = new AbortController()
 
     const checkStatus = async () => {
-      // სატესტო დაყოვნებისთვის
-      // await axiosInstance.get("https://httpbin.org/delay/1")
-
       try {
         const response = await axiosInstance.get("/user/status", {
           signal: authController.signal
         })
 
-        setAuthState({
+        setAuth({
           user: response.data.user,
-          initialLoading: false
+          loading: false
         })
       } catch (error) {
         try {
@@ -35,15 +36,17 @@ export const AuthContextProvider = ({ children }) => {
             }
           )
 
-          setAuthState({
+          setAuth({
             user: response.data.user,
-            initialLoading: false
+            loading: false
           })
         } catch (error) {
-          setAuthState((prevAuthState) => ({
-            ...prevAuthState,
-            initialLoading: false
-          }))
+          if (!axios.isCancel(error)) {
+            setAuth((prevAuthState) => ({
+              ...prevAuthState,
+              loading: false
+            }))
+          }
         }
       }
     }
@@ -76,12 +79,7 @@ export const AuthContextProvider = ({ children }) => {
   }, [])
 
   return (
-    <AuthContext.Provider
-      value={{
-        authState,
-        setAuthState
-      }}
-    >
+    <AuthContext.Provider value={{ auth, setAuth }}>
       {children}
     </AuthContext.Provider>
   )
