@@ -1,0 +1,157 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --col-accent: hsl(21, 90%, 48%);
+  --col-primary-3: hsl(217, 19%, 27%);
+  --col-primary-2: hsl(220, 9%, 46%);
+  --col-primary-1: hsl(225, 32%, 93%);
+  --col-secondary-2: hsl(240, 6%, 90%);
+  --col-secondary-1: hsl(240, 10%, 95%);
+  --col-danger: hsl(0, 100%, 63%);
+  --col-light: hsl(0, 0%, 100%);
+  --col-dark: hsl(0, 0%, 0%);
+
+  --border-radius: 5px;
+  --box-shadow: 0 0 0 0 hsl(0, 0%, 0%), 0 0 0 0 hsla(0, 0%, 0%, 0),
+    0 1px 2px 0 var(--col-secondary-2);
+}
+
+body {
+  margin: 0;
+  line-height: 1.4;
+  font-family: "Geist", sans-serif;
+  background-color: var(--col-light);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  line-height: 1.4;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 8px 16px;
+}
+
+img {
+  max-width: 100%;
+  max-height: 100%;
+  height: auto;
+  display: block;
+}
+
+button {
+  font: inherit;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+
+  svg {
+    vertical-align: middle;
+  }
+}
+
+a {
+  text-decoration: none;
+  display: inline-block;
+  color: inherit;
+}
+
+svg {
+  display: block;
+}
+
+figure {
+  margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+img {
+  display: block;
+}
+
+input,
+button {
+  font: inherit;
+  padding: 7px 10px;
+  border-radius: var(--border-radius);
+}
+
+label {
+  text-transform: capitalize;
+}
+
+input {
+  border: 1px solid var(--col-secondary-2);
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+button {
+  border: 0;
+  cursor: pointer;
+}
+
+a {
+  display: inline-block;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  .error {
+    color: var(--col-danger);
+  }
+}
+
+loading-container {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 16px;
+  align-items: center;
+  min-height: 30px;
+}
+
+.skeleton-loading {
+  width: 70px;
+  height: 20px;
+  padding: 5px 0;
+  border-radius: 10px;
+  background-color: hsl(0, 0%, 94%);
+  animation: loading 1.2s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-color: hsl(0, 0%, 94%);
+  }
+  50% {
+    background-color: hsl(0, 0%, 91%);
+  }
+  100% {
+    background-color: hsl(0, 0%, 94%);
+  }
+}

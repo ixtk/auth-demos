@@ -1,0 +1,51 @@
+.form-container {
+  max-width: 420px;
+  margin: 16px auto;
+  margin-top: 16px;
+}
+
+.auth-form {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--col-light);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  gap: 1rem;
+  border: 1px solid var(--col-secondary-1);
+}
+
+.form-title {
+  text-transform: capitalize;
+}
+
+.form-desc {
+  color: var(--col-primary-2);
+}
+
+.submit-btn {
+  background-color: var(--col-accent);
+  color: var(--col-light);
+  text-transform: capitalize;
+}
+
+.form-switch {
+  display: flex;
+  background-color: var(--col-secondary-1);
+  padding: 5px;
+  border-radius: var(--border-radius);
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.switch-btns {
+  background-color: var(--col-secondary-1);
+  color: var(--col-primary-2);
+  flex: 1;
+  font-size: 0.9rem;
+}
+
+.active-btn {
+  background-color: var(--col-light);
+  color: var(--col-dark);
+}

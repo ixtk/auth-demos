@@ -2,13 +2,13 @@ import { createContext, useEffect, useState } from "react"
 import { axiosInstance, axiosInterceptorsInstance } from "./axiosInstance"
 
 export const AuthContext = createContext({
-  initialLoading: true,
+  loading: true,
   user: null
 })
 
 export const AuthContextProvider = ({ children }) => {
-  const [authState, setAuthState] = useState({
-    initialLoading: true,
+  const [auth, setAuth] = useState({
+    loading: true,
     user: null
   })
 
@@ -16,14 +16,15 @@ export const AuthContextProvider = ({ children }) => {
     const checkStatus = async () => {
       try {
         const response = await axiosInstance.get("/user/status")
-        setAuthState({
-          initialLoading: false,
+        setAuth({
+          loading: false,
           user: response.data.user
         })
       } catch (error) {
-        setAuthState({
-          ...authState,
-          initialLoading: false
+        console.log('here')
+        setAuth({
+          ...auth,
+          loading: false
         })
       }
     }
@@ -47,7 +48,7 @@ export const AuthContextProvider = ({ children }) => {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ authState, setAuthState }}>
+    <AuthContext.Provider value={{ auth, setAuth }}>
       {children}
     </AuthContext.Provider>
   )

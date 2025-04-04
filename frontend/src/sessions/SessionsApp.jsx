@@ -6,33 +6,31 @@ import {
   useNavigate
 } from "react-router-dom"
 
-import {
-  RootLayout,
-  HomePage,
-  LoginPage,
-  RegisterPage,
-  SecretPage
-} from "./pages"
+import { Layout } from "./Layout"
+import { HomePage } from "../common/HomePage"
+import { LoginPage } from "./LoginPage"
+import { RegisterPage } from "./RegisterPage"
+import { SecretPage } from "../common/SecretPage"
 import { AuthContext, AuthContextProvider } from "./AuthContext"
 import { useContext, useEffect } from "react"
 
 const ProtectedRoute = ({ children }) => {
-  const { authState } = useContext(AuthContext)
+  const { auth } = useContext(AuthContext)
   const navigate = useNavigate()
 
   useEffect(() => {
-    // სტატუსის ინფორმაცია დაბრუნდა და მომხმარებელი არაავტორიზებულია
-    if (authState.initialLoading === false && authState.user === null) {
+    console.log(auth)
+    if (auth.loading === false && auth.user === null) {
       navigate("/login")
     }
-  }, [authState.user, authState.initialLoading, navigate])
+  }, [auth.user, auth.loading, navigate])
 
-  return authState.user ? children : null
+  return auth.user ? children : null
 }
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<RootLayout />}>
+    <Route path="/" element={<Layout />}>
       <Route index element={<HomePage />} />
       <Route path="login" element={<LoginPage />} />
       <Route

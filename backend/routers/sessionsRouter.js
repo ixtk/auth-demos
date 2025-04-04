@@ -50,6 +50,7 @@ sessionRouter.post("/user/register", async (req, res) => {
     email: registerValues.email,
     password: hashedPassword
   })
+  req.session.userId = newUser._id.toString()
 
   res.status(201).json({
     user: {
