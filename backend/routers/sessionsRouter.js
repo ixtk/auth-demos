@@ -12,14 +12,15 @@ sessionRouter.use(
     // HIDE IN PROD!
     secret: "super secret",
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     // rolling: true,
     cookie: {
       maxAge: 1000 * 60 * 60 * 3,
       httpOnly: true
     },
     store: MongoStore.create({
-      mongoUrl: "mongodb://127.0.0.1:27017/auth-demos"
+      mongoUrl: "mongodb://127.0.0.1:27017/auth-demos",
+      stringify: false
     })
   })
 )
