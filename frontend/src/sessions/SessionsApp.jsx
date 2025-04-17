@@ -1,6 +1,7 @@
 import {
   createBrowserRouter,
   createRoutesFromElements,
+  Navigate,
   Route,
   RouterProvider,
   useNavigate,
@@ -16,37 +17,30 @@ import { useContext, useEffect } from "react";
 
 const ProtectedRoute = ({ children }) => {
   const { auth } = useContext(AuthContext);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    console.log(auth);
-    if (auth.loading === false && auth.user === null) {
-      navigate("/login");
-    }
-  }, [auth.user, auth.loading, navigate]);
 
   if (auth.loading) {
     return null
   }
 
-  return auth.user ? children : null;
+  if (auth.user !== null) {
+    return children
+  } else {
+    return <Navigate to="/login" />
+  }
 };
 
 const RedirectIfLoggedIn = ({ children }) => {
   const { auth } = useContext(AuthContext);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (auth.loading === false && auth.user !== null) {
-      navigate("/");
-    }
-  }, [auth.user, auth.loading, navigate]);
 
   if (auth.loading) {
     return null
   }
 
-  return auth.user === null ? children : null;
+  if (auth.user !== null) {
+    return <Navigate to="/" />
+  } else {
+    return children
+  }
 };
 
 const router = createBrowserRouter(
