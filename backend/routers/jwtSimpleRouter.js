@@ -2,6 +2,8 @@ import express from "express"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { User } from "../UserModel.js"
+import {loginSchema, registerSchema} from "../userSchema.js"
+import { validateSchema } from "../middleware.js"
 
 const JWT_SECRET = "<your secret>"
 
@@ -32,7 +34,7 @@ jwtSimpleRouter.get("/secret", verifyAccessToken, (req, res) => {
   return res.json({ secret: "2 x 2 = 4" })
 })
 
-jwtSimpleRouter.post("/user/register", async (req, res) => {
+jwtSimpleRouter.post("/user/register", validateSchema(registerSchema), async (req, res) => {
   const registerValues = req.body
 
   const hashedPassword = await bcrypt.hash(registerValues.password, 8)
@@ -50,15 +52,17 @@ jwtSimpleRouter.post("/user/register", async (req, res) => {
   })
 })
 
-jwtSimpleRouter.post("/user/login", async (req, res) => {
+jwtSimpleRouter.post("/user/login", validateSchema(loginSchema), async (req, res) => {
   const { email, password } = req.body
   const user = await User.findOne({ email })
-  const userObj = user.toObject()
+  const userToEncode = {
+    username: user.username,
+    email: user.email,
+    _id: user._id.toString()
+  }
 
-  if (user && (await bcrypt.compare(password, userObj.password))) {
-    const { password, ...rest } = userObj
-
-    const accessToken = jwt.sign(rest, JWT_SECRET, {
+  if (user && (await bcrypt.compare(password, user.password))) {
+    const accessToken = jwt.sign(userToEncode, JWT_SECRET, {
       expiresIn: "1d"
     })
 
@@ -68,7 +72,7 @@ jwtSimpleRouter.post("/user/login", async (req, res) => {
         maxAge: 1000 * 60 * 60 * 24,
         sameSite: "strict"
       })
-      .json({ user: rest })
+      .json({ user: userToEncode })
   } else {
     res.status(401).json({ message: "Invalid username or password" })
   }

@@ -2,6 +2,8 @@ import express from "express"
 import session from "express-session"
 import MongoStore from "connect-mongo"
 import bcrypt from "bcrypt"
+import { loginSchema, registerSchema } from "../userSchema.js"
+import { validateSchema } from "../middleware.js"
 
 import { User } from "../UserModel.js"
 
@@ -41,7 +43,7 @@ sessionRouter.get("/secret", verifyAuth, (req, res) => {
   res.json({ secret: "2 x 2 = 4" })
 })
 
-sessionRouter.post("/user/register", async (req, res) => {
+sessionRouter.post("/user/register", validateSchema(registerSchema), async (req, res) => {
   const registerValues = req.body
 
   const hashedPassword = await bcrypt.hash(registerValues.password, 12)
@@ -61,7 +63,7 @@ sessionRouter.post("/user/register", async (req, res) => {
   })
 })
 
-sessionRouter.post("/user/login", async (req, res) => {
+sessionRouter.post("/user/login", validateSchema(loginSchema), async (req, res) => {
   const { email, password } = req.body
 
   const existingUser = await User.findOne({ email }).exec()
