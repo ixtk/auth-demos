@@ -1,17 +1,18 @@
 import { useState } from "react"
-import { axiosInterceptorsInstance } from "./axiosInstance"
+import { axiosInstance } from "./axiosInstance"
+import toast from "react-hot-toast"
 
 export const SecretPage = () => {
   const [secret, setSecret] = useState("")
 
   const getSecret = async () => {
     try {
-      console.log("Starting to fetch secret")
-      const response = await axiosInterceptorsInstance.get("/secret")
-      console.log("Setting state", response.data.secret)
+      const response = await axiosInstance.get("/secret")
       setSecret(response.data.secret)
     } catch (error) {
-      console.log("In the original catch block")
+      if (error.response?.status !== 401) {
+        toast.error("Failed to fetch secret. Please try again later.")
+      }
     }
   }
 

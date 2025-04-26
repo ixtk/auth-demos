@@ -6,7 +6,7 @@ export const Form = ({ title, description, fields, onSubmit, form }) => {
         <p className="form-desc">{description}</p>
         {fields.map((field) => {
           return (
-            <div className="input-group">
+            <div key={field.name} className="input-group">
               <label>{field.label || field.name}</label>
               <input
                 {...form.getFieldProps(field.name)}
