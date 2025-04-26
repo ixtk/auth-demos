@@ -1,4 +1,4 @@
-import axiosInstance from "./axiosInstance.js"
+import { axiosInstance } from "./axiosInstance.js"
 import { createContext, useState, useEffect } from "react"
 import axios from "axios"
 
@@ -18,6 +18,7 @@ export const AuthContextProvider = ({ children }) => {
 
     const checkStatus = async () => {
       try {
+        // Try to get user status first
         const response = await axiosInstance.get("/user/status", {
           signal: authController.signal
         })
@@ -27,24 +28,12 @@ export const AuthContextProvider = ({ children }) => {
         })
       } catch (error) {
         if (!axios.isCancel(error)) {
-          try {
-            const response = await axiosInstance.post(
-              "/refresh",
-              {},
-              {
-                signal: authController.signal
-              }
-            )
-            setAuth({
-              user: response.data.user,
-              loading: false
-            })
-          } catch (error) {
-            setAuth((prevAuthState) => ({
-              ...prevAuthState,
-              loading: false
-            }))
-          }
+          // Status check failed and wasn't cancelled
+          // Don't try to refresh here - the axios interceptor will handle that
+          setAuth({
+            user: null,
+            loading: false
+          })
         }
       }
     }

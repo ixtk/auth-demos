@@ -13,12 +13,12 @@ const verifyAccessToken = async (req, res, next) => {
   const { accessToken } = req.cookies
 
   if (!accessToken) {
-    return res.status(401).json({ message: "Unauthenticated" })
+    return res.status(401).json({ user: null, message: "Unauthenticated" })
   }
 
   jwt.verify(accessToken, JWT_SECRET, (error, decoded) => {
     if (error) {
-      return res.status(401).json({ message: "Unauthenticated" })
+      return res.status(401).json({ user: null, message: "Unauthenticated" })
     }
 
     req.user = decoded

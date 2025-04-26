@@ -28,13 +28,11 @@ sessionRouter.use(
 )
 
 const verifyAuth = async (req, res, next) => {
-  // console.log(req.session)
   if (req.session.userId) {
     req.user = await User.findById(req.session.userId).select("-password")
     next()
   } else {
-    // else-ში მოვაქციეთ, next()-ის შემდეგ ეს პასუხიც რომ არ გაეშვას
-    return res.status(401).json({ message: "Unauthenticated" })
+    return res.status(401).json({ user: null, message: "Unauthenticated" })
   }
 }
 

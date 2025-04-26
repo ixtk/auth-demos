@@ -21,7 +21,6 @@ export const AuthContextProvider = ({ children }) => {
           user: response.data.user
         })
       } catch (error) {
-        console.log('here')
         setAuth({
           ...auth,
           loading: false

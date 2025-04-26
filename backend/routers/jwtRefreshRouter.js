@@ -11,12 +11,12 @@ const JWT_SECRET = "try to guess";
 
 const verifyAccessToken = async (req, res, next) => {
   if (!req.cookies.accessToken) {
-    return res.status(401).json({ message: "Unauthenticated" });
+    return res.status(401).json({ user: null, message: "Unauthenticated" });
   }
 
   jwt.verify(req.cookies.accessToken, JWT_SECRET, (error, decoded) => {
     if (error) {
-      return res.status(401).json({ message: "Unauthenticated" });
+      return res.status(401).json({ user: null, message: "Unauthenticated" });
     }
 
     // ამ user ატრიბუტს გამოვიყენებთ რიგით შემდეგ middleware/response-ებში
@@ -124,20 +124,20 @@ jwtRefreshRouter.post("/refresh", async (req, res) => {
   const { refreshToken } = req.cookies;
 
   if (!refreshToken) {
-    return res.status(401).json({ message: "unauthenticated" });
+    return res.status(401).json({ user: null, message: "unauthenticated" });
   }
 
   jwt.verify(refreshToken, JWT_SECRET, async (error, decoded) => {
     if (error) {
       res.clearCookie("refreshToken");
-      return res.status(401).json({ message: "unauthenticated" });
+      return res.status(401).json({ user: null, message: "unauthenticated" });
     }
 
     const user = await User.findById(decoded.userId);
 
     if (!user || !user.refreshTokens.includes(refreshToken)) {
       res.clearCookie("refreshToken");
-      return res.status(401).json({ message: "unauthenticated" });
+      return res.status(401).json({ user: null, message: "unauthenticated" });
     }
 
     const accessToken = jwt.sign(
