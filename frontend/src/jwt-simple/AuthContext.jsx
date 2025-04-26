@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react"
-import { axiosInstance, axiosInterceptorsInstance } from "./axiosInstance"
+import { axiosInstance } from "./axiosInstance"
 
 export const AuthContext = createContext({
   loading: true,
@@ -16,7 +16,6 @@ export const AuthContextProvider = ({ children }) => {
     const checkStatus = async () => {
       try {
         const response = await axiosInstance.get("/user/status")
-        console.log(response.data.user)
         setAuth({
           loading: false,
           user: response.data.user
@@ -30,21 +29,6 @@ export const AuthContextProvider = ({ children }) => {
     }
 
     checkStatus()
-
-    const logoutInterceptor =
-      axiosInterceptorsInstance.interceptors.response.use(
-        (response) => response,
-        (error) => {
-          if (error.response?.status === 401) {
-            window.location.href = "/login"
-          }
-          return Promise.reject(error)
-        }
-      )
-
-    return () => {
-      axiosInterceptorsInstance.interceptors.response.eject(logoutInterceptor)
-    }
   }, [])
 
   return (
