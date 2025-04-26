@@ -10,18 +10,6 @@ export const axiosInstance = axios.create({
 const authEndpoints = ['/user/login', '/user/register', '/user/status', '/refresh']
 
 let isRefreshing = false
-let failedQueue = []
-
-const processQueue = (error) => {
-  failedQueue.forEach(prom => {
-    if (error) {
-      prom.reject(error)
-    } else {
-      prom.resolve()
-    }
-  })
-  failedQueue = []
-}
 
 axiosInstance.interceptors.response.use(
   (response) => response,
@@ -35,32 +23,24 @@ axiosInstance.interceptors.response.use(
     // 1. This is not a 401 error
     // 2. This request has already been retried
     // 3. This is the /refresh endpoint itself
+    // 4. We're already refreshing
     if (
       error.response?.status !== 401 || 
       originalRequest._retry ||
-      originalRequest.url.includes('/refresh')
+      originalRequest.url.includes('/refresh') ||
+      isRefreshing
     ) {
       return Promise.reject(error)
-    }
-
-    // If we're already refreshing, queue this request
-    if (isRefreshing) {
-      return new Promise((resolve, reject) => {
-        failedQueue.push({ resolve, reject })
-      })
-        .then(() => axiosInstance(originalRequest))
-        .catch(err => Promise.reject(err))
     }
 
     isRefreshing = true
     originalRequest._retry = true
 
     try {
-      const response = await axiosInstance.post("/refresh")
-      processQueue(null)
-      return axiosInstance(originalRequest)
+      await axiosInstance.post("/refresh")
+      const retryResponse = await axiosInstance(originalRequest)
+      return retryResponse
     } catch (refreshError) {
-      processQueue(refreshError)
       if (!isAuthEndpoint) {
         toast.error('Session expired. Please refresh the page')
       }
