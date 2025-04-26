@@ -3,31 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { User } from "../UserModel.js";
 import { validateSchema } from "../middleware.js";
-import { object, string, ref } from "yup";
-
-const loginSchema = object({
-  email: string()
-    .matches(
-      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-      "Invalid email format"
-    )
-    .required(),
-  password: string().min(8).required(),
-});
-
-const registerSchema = object({
-  email: string()
-    .matches(
-      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-      "Invalid email format"
-    )
-    .required(),
-  username: string().min(3).max(20).required(),
-  password: string().min(8).required(),
-  confirmPassword: string()
-    .oneOf([ref("password"), null], "Passwords do not match")
-    .required("Password confirmation is required")
-})
+import { registerSchema, loginSchema } from "../userSchema.js";
 
 export const jwtRefreshRouter = express.Router();
 
@@ -70,14 +46,14 @@ jwtRefreshRouter.post("/user/register", validateSchema(registerSchema), async (r
   });
 
   const accessToken = jwt.sign(
-    { username: newUser.username, email: newUser.email },
+    { username: newUser.username, email: newUser.email, _id: newUser._id.toString() },
     JWT_SECRET,
     {
       expiresIn: "5m",
     }
   );
 
-  const refreshToken = jwt.sign({ userId: newUser._id }, JWT_SECRET, {
+  const refreshToken = jwt.sign({ userId: newUser._id.toString() }, JWT_SECRET, {
     expiresIn: "7d",
   });
 
@@ -106,22 +82,20 @@ jwtRefreshRouter.post("/user/register", validateSchema(registerSchema), async (r
 jwtRefreshRouter.post("/user/login", validateSchema(loginSchema), async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
-  const userObj = user.toObject();
+  const userToEncode = {
+    username: user.username,
+    email: user.email,
+    _id: user._id.toString()
+  }
 
-  if (user && (await bcrypt.compare(password, userObj.password))) {
-    const { password, ...rest } = userObj;
+  if (user && (await bcrypt.compare(password, user.password))) {
+    const accessToken = jwt.sign(userToEncode, JWT_SECRET, {
+      expiresIn: "5m"
+    })
 
-    const accessToken = jwt.sign(
-      { username: user.username, email: user.email },
-      JWT_SECRET,
-      {
-        expiresIn: "5m",
-      }
-    );
-
-    const refreshToken = jwt.sign({ userId: rest._id }, JWT_SECRET, {
-      expiresIn: "7d",
-    });
+    const refreshToken = jwt.sign({ userId: userToEncode._id }, JWT_SECRET, {
+      expiresIn: "7d"
+    })
 
     user.refreshTokens.push(refreshToken);
     await user.save();
@@ -140,7 +114,7 @@ jwtRefreshRouter.post("/user/login", validateSchema(loginSchema), async (req, re
       maxAge: 1000 * 60 * 5,
     });
 
-    res.json({ user: rest });
+    res.json({ user: userToEncode });
   } else {
     res.status(401).json({ message: "Invalid username or password" });
   }
